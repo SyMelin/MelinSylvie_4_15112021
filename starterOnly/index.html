@@ -51,20 +51,20 @@
           je m'inscris
         </button>
       </div>
-
+      
+      <!-- Elemenent contenant la modale -->
       <div class="bground">
         <div class="content">
-          <span class="close"></span>
-          <div class="modal-body">
+          <span class="close"></span><!-- Bouton qui ferme la modale -->
+          <div class="modal-body"><!-- Corps de la modale -->
             <form
               name="reserve"
               action="index.html"
               method="get"
               onsubmit="return validate();"
             >
-              <div
-                class="formData">
-                <label>Prénom</label><br>
+              <div class="formData">
+                <label for="first">Prénom</label><br><!-- Correction : ajout de for -->
                 <input
                   class="text-control"
                   type="text"
@@ -73,9 +73,8 @@
                   minlength="2"
                 /><br>
               </div>
-              <div
-                class="formData">
-                <label>Nom</label><br>
+              <div class="formData">
+                <label for="last">Nom</label><br><!-- Correction : ajout de for -->
                 <input
                   class="text-control"
                   type="text"
@@ -83,9 +82,8 @@
                   name="last"
                 /><br>
               </div>
-              <div
-                class="formData">
-                <label>E-mail</label><br>
+              <div class="formData">
+                <label for="email">E-mail</label><br><!-- Correction : ajout de for -->
                 <input
                   class="text-control"
                   type="email"
@@ -93,9 +91,8 @@
                   name="email"
                 /><br>
               </div>
-              <div
-                class="formData">
-                <label>Date de naissance</label><br>
+              <div class="formData">
+                <label for="birthdate">Date de naissance</label><br><!-- Correction : ajout de for -->
                 <input
                   class="text-control"
                   type="date"
@@ -103,20 +100,19 @@
                   name="birthdate"
                 /><br>
               </div>
-              <div
-                class="formData">
-                <label>À combien de tournois GameOn avez-vous déjà participé ?</label><br>
+              <div class="formData">
+                <label for="quantity">À combien de tournois GameOn avez-vous déjà participé ?</label><br><!-- Correction : ajout de for -->
                 <input
+                  class="text-control"
                   type="number" 
-                  class="text-control" 
                   id="quantity" 
                   name="quantity" 
                   min="0" 
-                  max="99">
+                  max="99"
+                  />
               </div>
               <p class="text-label">Quelles villes ?</p>
-              <div
-                class="formData">
+              <div class="formData">
                 <input
                   class="checkbox-input"
                   type="radio"
@@ -185,8 +181,7 @@
                 >
               </div>
 
-              <div
-                class="formData">
+              <div class="formData">
                 <input
                   class="checkbox-input"
                   type="checkbox"

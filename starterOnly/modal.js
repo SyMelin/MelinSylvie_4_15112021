@@ -20,6 +20,8 @@ function launchModal() {
   modalbg.style.display = "block";
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 // close modal form
 const close = document.querySelector(".content .close");
 close.addEventListener("click", function() {
@@ -33,13 +35,24 @@ close.addEventListener("click", function() {
 
 let errorMessage = document.createElement("p");
 errorMessage.style.color = "#FFF000";
-errorMessage.style.fontSize = "1rem";
+errorMessage.style.fontSize = "0.875rem";
  
+let addErrorMessage = function (field) {
+  let fieldParent = field.parentElement;
+  errorMessage.textContent = field.errorText;
+  fieldParent.appendChild(errorMessage);
+}
+
+let removeErrorMessage = function (field) {
+  let fieldParent = field.parentElement;
+  fieldParent.removeChild(errorMessage);
+}
+
 
 //Validation sur lastName
-
-let lastName = document.getElementById("last");
-let lastNameParent = lastName.parentElement;
+/*
+const lastName = document.getElementById("last");
+const lastNameParent = lastName.parentElement;
 const lastNameMinLength = 2;
 lastName.addEventListener("change", function(e) {
   if (lastName.value.length < lastNameMinLength) {
@@ -49,9 +62,26 @@ lastName.addEventListener("change", function(e) {
     lastNameParent.removeChild(errorMessage);
   };
 });
+*/
+
+const lastName = document.getElementById("last");
+lastName.errorText = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
+const lastNameMinLength = 2;
+
+lastName.addEventListener("change", function(e) {
+  if (lastName.value.length < lastNameMinLength) {
+    addErrorMessage(lastName);
+  } else if (lastName.value.length >= lastNameMinLength && lastName.parentElement.lastElementChild == errorMessage) {
+    removeErrorMessage (lastName);
+  };
+});
+
+
+
+
 
 /*
-let lastName = document.getElementById("last");
+const lastName = document.getElementById("last");
 const lastNameMinLength = 2;
 let condition = lastName.value.length < lastNameMinLength;
 let condition2 = "lastName.value.length >= lastNameMinLength";
@@ -73,14 +103,14 @@ lastName.addEventListener("change", function(e) {
 
 //Validation de email
 
-let email = document.getElementById("email");
-let emailParent = email.parentElement;
+const email = document.getElementById("email");
+email.errorText = "Veuillez entrer une adresse e-mail valide";
+
 email.addEventListener("change", function(e) {
   if (email.validity.typeMismatch) {
-    errorMessage.textContent = "Veuillez entrer une adresse e-mail valide";
-    emailParent.appendChild(errorMessage);
-  } else if (!email.validity.typeMismatch && emailParent.lastElementChild == errorMessage) {
-    emailParent.removeChild(errorMessage);
+    addErrorMessage (email);
+  } else if (!email.validity.typeMismatch && email.parentElement.lastElementChild == errorMessage) {
+    removeErrorMessage (email);
   };
 });
 
@@ -88,14 +118,34 @@ email.addEventListener("change", function(e) {
 
 // Validation de quantity
 
-let quantity = document.getElementById("quantity");
-let quantityParent = quantity.parentElement;
+const quantity = document.getElementById("quantity");
+quantity.errorText = "Veuillez un nombre entre 0 et 99";
+
 document.querySelector("form").addEventListener("submit", function (e) {
     if (quantity.value === "") {
-      errorMessage.textContent = "Veuillez un nombre entre 0 et 99";
-      quantityParent.appendChild(errorMessage);
+      addErrorMessage (quantity);
       e.preventDefault();
     }
+});
+
+// Validation pour bouton radio
+
+const locationsLabels = document.getElementsByClassName("checkbox-label");
+const locations = locationsLabels[0];
+locations.errorText = "Veuillez choisir une option parmi les villes proposées"
+
+document.querySelector("form").addEventListener("submit", function (e) {
+  let compteur = 0;
+  for (let city of locationsLabels) {
+    if (city.previousElementSibling.checked) {
+      compteur++;
+    };
+  };
+  if (compteur == 0) {
+    console.log("compteur "+ compteur);
+    addErrorMessage (locations);
+      e.preventDefault();
+  };
 });
 
 
@@ -128,12 +178,13 @@ document.querySelector("form").addEventListener("submit", function (e) {
 
 
 // Checkbox1
+
+const checkbox1 = document.getElementById("checkbox1");
+checkbox1.errorText = "Vous devez vérifier que vous acceptez les termes et conditions";
+  
 document.querySelector("form").addEventListener("submit", function(e) {
-  let checkbox1 = document.querySelector("#checkbox1");
-  let checkbox1Parent = checkbox1.parentElement;
   if (checkbox1.checked === false) {
-    errorMessage.textContent = "Vous devez vérifier que vous acceptez les termes et conditions";
-    checkbox1Parent.appendChild(errorMessage);
+    addErrorMessage (checkbox1);
     e.preventDefault();
   }
 });

@@ -20,7 +20,13 @@ function launchModal() {
   modalbg.style.display = "block";
 }
 
-/////////////////////// CODE AJOUTE /////////////////////////
+
+
+
+
+
+/////////////////////// CODE AJOUTE //////////////////////////////////////////
+
 
 // close modal form
 const close = document.querySelector(".content .close");
@@ -28,24 +34,16 @@ close.addEventListener("click", function() {
    document.querySelector(".bground").style.display = "none";
 })
 
-//Chaque formDatareçoit une class .notValid par défaut
-const formDataAll = document.getElementsByClassName("formData");
-for (let formData of formDataAll) {
-  formData.classList.add('notValid');
-}
-//console.log(formDataAll[2].classList);
 
-
-
-
-//Validation de chaque champ du formulaire
-
-// Création de l'élément content le message d'erreur
+// Création de l'élément contenant le message d'erreur
 
 let errorMessage = document.createElement("p");
 errorMessage.style.color = "#FFF000";
 errorMessage.style.fontSize = "0.875rem";
  
+
+// Fonctions associées au mesage d'erreur
+
 let addErrorMessage = function (field) {
   let fieldParent = field.parentElement;
   errorMessage.textContent = field.errorText;
@@ -57,82 +55,52 @@ let removeErrorMessage = function (field) {
   fieldParent.removeChild(errorMessage);
 };
 
+// On ajoute par défaut une classe notValid à chaque formData
+const formDataAll = document.getElementsByClassName("formData");
+for (let formData of formDataAll){
+  formData.classList.add("notValid");
+}
+
+
+// Validation sur firstName
 
 const firstName = document.getElementById("first");
-first.errorText = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
-first.minLength = 2;
+firstName.errorText = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
+firstName.minLength = 2;
+
+
+let checkValidityText = function (element) {
+  if (element.value.length < element.minLength) {
+    addErrorMessage(element);
+    element.parentElement.classList.add('notValid');
+  } else if (element.parentElement.lastElementChild == errorMessage) {
+    removeErrorMessage (element);
+    element.parentElement.classList.remove('notValid');
+  } else {
+    element.parentElement.classList.remove('notValid');
+  };
+};
+
 
 firstName.addEventListener("change", function(e) {
   e.stopPropagation();
-  if (e.target.value.length < firstName.minLength) {
-    addErrorMessage(e.target);
-  } else if (e.target.parentElement.lastElementChild == errorMessage) {
-    removeErrorMessage (e.target);
-    e.target.parentElement.classList.remove('notValid');
-  } else {
-    e.target.parentElement.classList.remove('notValid');
-  };
+  checkValidityText(firstName);
   console.log(e.target.parentElement.classList);
 });
 
 
-
-
-
 //Validation sur lastName
-/*
-const lastName = document.getElementById("last");
-const lastNameParent = lastName.parentElement;
-const lastNameMinLength = 2;
-lastName.addEventListener("change", function(e) {
-  if (lastName.value.length < lastNameMinLength) {
-    errorMessage.textContent = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
-    lastNameParent.appendChild(errorMessage);
-  } else if (lastName.value.length >= lastNameMinLength && lastNameParent.lastElementChild == errorMessage) {
-    lastNameParent.removeChild(errorMessage);
-  };
-});
-*/
 
 const lastName = document.getElementById("last");
 lastName.errorText = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
 lastName.minLength = 2;
 
+
 lastName.addEventListener("change", function(e) {
   e.stopPropagation();
-  if (e.target.value.length < lastName.minLength) {
-    addErrorMessage(e.target);
-  } else if (e.target.parentElement.lastElementChild == errorMessage) {
-    removeErrorMessage (e.target);
-    e.target.parentElement.classList.remove('notValid');
-  } else {
-    e.target.parentElement.classList.remove('notValid');
-  };
+  checkValidityText(lastName);
   console.log(e.target.parentElement.classList);
 });
-
-
-
-
-
-/*
-const lastName = document.getElementById("last");
-const lastNameMinLength = 2;
-let condition = lastName.value.length < lastNameMinLength;
-let condition2 = "lastName.value.length >= lastNameMinLength";
-let checkVal = function () {
-  if (condition) {
-    errorMessage.textContent = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
-    lastName.parentElement.appendChild(errorMessage);
-  } else if (condition2 && lastName.parentElement.lastElementChild == errorMessage) {
-    lastName.parentElement.removeChild(errorMessage);
-  };
-};
-
-lastName.addEventListener("change", function(e) {
-  checkVal();
-});
-*/
 
 
 
@@ -141,18 +109,25 @@ lastName.addEventListener("change", function(e) {
 const email = document.getElementById("email");
 email.errorText = "Veuillez entrer une adresse e-mail valide";
 
+let checkValidityEmail = function(element) {
+  if (element.validity.typeMismatch || element.value == "") {
+    addErrorMessage (element);
+    element.parentElement.classList.add('notValid');
+  } else if (element.parentElement.lastElementChild == errorMessage) {
+    removeErrorMessage (element);
+    element.parentElement.classList.remove('notValid');
+  } else {
+    element.parentElement.classList.remove('notValid');
+  };
+};
+
+
 email.addEventListener("change", function(e) {
   e.stopPropagation();
-  if (email.validity.typeMismatch) {
-    addErrorMessage (email);
-  } else if (email.parentElement.lastElementChild == errorMessage) {
-    removeErrorMessage (email);
-    e.target.parentElement.classList.remove('notValid');
-  } else {
-    e.target.parentElement.classList.remove('notValid');
-  }
+  checkValidityEmail(email);
   console.log(e.target.parentElement.classList);
 });
+
 
 
 // Validation de birthdate
@@ -160,32 +135,42 @@ email.addEventListener("change", function(e) {
 const birthdate = document.getElementById("birthdate");
 birthdate.errorText = "Veuillez entrer votre date de naissance";
 
+let checkValidityValue = function (element) {
+  if (element.value === "") {
+      addErrorMessage (element);
+      element.parentElement.classList.add('notValid');  
+  } else {
+    element.parentElement.classList.remove('notValid');
+  };
+};
+//console.log("birthdate " + birthdate.parentElement.classList);
+  
+
 document.querySelector("form").addEventListener("submit", function (e) {
-    if (birthdate.value === "") {
-      addErrorMessage (birthdate);
+  if (birthdate.parentElement.classList.contains("notValid")) {
       e.preventDefault();
-    } else {
-      birthdate.parentElement.classList.remove('notValid');
-    };
-    console.log(birthdate.parentElement.classList);
-}); 
+      checkValidityValue(birthdate);
+  };
+  console.log("birthdate " + birthdate.parentElement.classList);
+});
 
 
 
 // Validation de quantity
 
 const quantity = document.getElementById("quantity");
-quantity.errorText = "Veuillez un nombre entre 0 et 99";
+quantity.errorText = "Veuillez entrer un nombre entre 0 et 99";
+
 
 document.querySelector("form").addEventListener("submit", function (e) {
-    if (quantity.value === "") {
-      addErrorMessage (quantity);
-      e.preventDefault();
-    } else {
-      quantity.parentElement.classList.remove('notValid');
-    };
+  if (quantity.parentElement.classList.contains("notValid")) {
+    e.preventDefault();
+    checkValidityValue(quantity);
+  };
     console.log(quantity.parentElement.classList);
 });
+
+
 
 // Validation pour bouton radio
 
@@ -193,82 +178,93 @@ const locationsAll = document.querySelectorAll("input[name='location']");
 const locations = locationsAll[0];
 locations.errorText = "Veuillez choisir une option parmi les villes proposées"
 
-document.querySelector("form").addEventListener("submit", function (e) {
+let checkValidityRadio = function (){
   let compteur = 0;
   for (let city of locationsAll) {
     if (city.checked) {
       compteur++;
     };
   };
-  console.log("compteur1 "+ compteur);
+ // console.log("compteur1 "+ compteur);
   if (compteur == 0) {
-    console.log("compteur2 "+ compteur);
+   // console.log("compteur2 "+ compteur);
     addErrorMessage (locations);
-      e.preventDefault();
+    locations.parentElement.classList.add('notValid');
   } else {
     locations.parentElement.classList.remove('notValid');
   };
-  console.log(locations.parentElement.classList);
-});
-
-
-/*
-let quantity = {
-  identifiant: document.getElementById("quantity"),
-  condition: 'quantity.value === ""',
-  errorText: "Veuillez un nombre entre 0 et 99",
-  valid: false
 };
 
 
-  let checkValidity = function (field) {
-    let fieldParent = field.identifiant.parentElement;
-    if (field.condition) {
-      errorMessage.textContent = field.errorText;
-      fieldParent.appendChild(errorMessage);
-    }
-  };
-
-  
 document.querySelector("form").addEventListener("submit", function (e) {
-  checkValidity (quantity);
-  if (quantity.valid === false) {
-    console.log(quantity.valid);
-    e.preventDefault;
-  }
+  if (locations.parentElement.classList.contains("notValid")) {
+    e.preventDefault();
+    checkValidityRadio();
+  };
+    console.log("locations " + locations.parentElement.classList);
 });
-*/
+
 
 
 // Checkbox1
 
 const checkbox1 = document.getElementById("checkbox1");
 checkbox1.errorText = "Vous devez vérifier que vous acceptez les termes et conditions";
-  
-document.querySelector("form").addEventListener("submit", function(e) {
+
+let checkValidityCheckbox = function () {
   if (checkbox1.checked === false) {
     addErrorMessage (checkbox1);
-    e.preventDefault();
+    checkbox1.parentElement.classList.add('notValid');
   } else {
     checkbox1.parentElement.classList.remove('notValid');
+  };
+};
+
+
+document.querySelector("form").addEventListener("submit", function(e) {
+  if (checkbox1.parentElement.classList.contains("notValid")) {
+    e.preventDefault();
+    checkValidityCheckbox();
   };
   console.log(checkbox1.parentElement.classList);
 });
 
+
+
 //Validation du formulaire
-document.querySelector("form").addEventListener("submit", function(e) {
-  e.preventDefault();
+/*
+let validity;
+let validate = function () {
   let compteurSubmit = 0;
   for (let formData of formDataAll) {
     if (formData.classList.contains("notValid")) {
       compteurSubmit++;
     };
   };
+  console.log(formDataAll);
   console.log(compteurSubmit);
   if (compteurSubmit !== 0) {
-     e.preventDefault();
+    checkValidityText(firstName);
+    checkValidityText(lastName);
+    checkValidityEmail(email);
+    checkValidityValue(birthdate);
+    checkValidityValue(quantity);
+    checkValidityRadio();
+    checkValidityCheckbox();
+    return validity = false;
+  };
+};
+*/
+
+/*
+document.querySelector("form").addEventListener("submit", function(e) {
+  validate ();
+  console.log(validity);
+  if (validity = false) {
+    e.preventDefault();
+    validate();
   } else {
     alert ("Merci ! Votre réservation a été reçue.");
   };
   console.log(formDataAll);
-});
+});*/

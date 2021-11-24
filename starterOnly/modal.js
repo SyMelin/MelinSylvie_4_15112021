@@ -56,76 +56,73 @@ let removeErrorMessage = function (field) {
 };
 
 // On ajoute par défaut une classe notValid à chaque formData
+/*
 const formDataAll = document.getElementsByClassName("formData");
 for (let formData of formDataAll){
   formData.classList.add("notValid");
 }
-
+*/
 
 // Validation sur firstName
 
 const firstName = document.getElementById("first");
-firstName.errorText = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
-firstName.minLength = 2;
+firstName.parentElement.setAttribute("data-error", "Veuillez entrer " + firstName.minLength + " caractères ou plus pour le champ du prénom");
+//firstName.minLength = 2; //déjà pécisé dans le HTML, en propriété de l'input
 
 
 let checkValidityText = function (element) {
   if (element.value.length < element.minLength) {
-    addErrorMessage(element);
-    element.parentElement.classList.add('notValid');
-  } else if (element.parentElement.lastElementChild == errorMessage) {
-    removeErrorMessage (element);
-    element.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "true");
   } else {
-    element.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "false");
   };
 };
 
 
 firstName.addEventListener("change", function(e) {
-  e.stopPropagation();
   checkValidityText(firstName);
-  console.log(e.target.parentElement.classList);
+  console.log("message "+ e.target.parentElement.getAttribute("data-error-visible"));
 });
 
 
 //Validation sur lastName
 
 const lastName = document.getElementById("last");
-lastName.errorText = "Veuillez entrer 2 caractères ou plus pour le champ du prénom";
 lastName.minLength = 2;
+lastName.parentElement.setAttribute("data-error", "Veuillez entrer " + lastName.minLength + " caractères ou plus pour le champ du nom de famille");
 
 
 lastName.addEventListener("change", function(e) {
-  e.stopPropagation();
   checkValidityText(lastName);
-  console.log(e.target.parentElement.classList);
+  console.log("message "+ e.target.parentElement.getAttribute("data-error-visible"));
 });
 
-
+let formDataValidity = 0;
 
 //Validation de email
 
 const email = document.getElementById("email");
-email.errorText = "Veuillez entrer une adresse e-mail valide";
+email.parentElement.setAttribute("data-error", "Veuillez entrer une adresse e-mail valide");
+//email.parentElement.setAttribute("data-error-visible", "false");
+console.log(email.parentElement.attributes);
 
 let checkValidityEmail = function(element) {
+  let count;
   if (element.validity.typeMismatch || element.value == "") {
-    addErrorMessage (element);
-    element.parentElement.classList.add('notValid');
-  } else if (element.parentElement.lastElementChild == errorMessage) {
-    removeErrorMessage (element);
-    element.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "true");
+    count = 0;
   } else {
-    element.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "false");
+    count = 1;
   };
+  formDataValidity = formDataValidity + count;
+  console.log("fdValidity " + formDataValidity);
 };
 
 
 email.addEventListener("change", function(e) {
-  e.stopPropagation();
   checkValidityEmail(email);
-  console.log(e.target.parentElement.classList);
+  console.log("message " + e.target.parentElement.getAttribute("data-error-visible"));
 });
 
 
@@ -133,25 +130,21 @@ email.addEventListener("change", function(e) {
 // Validation de birthdate
 
 const birthdate = document.getElementById("birthdate");
-birthdate.errorText = "Veuillez entrer votre date de naissance";
+birthdate.parentElement.setAttribute("data-error", "Veuillez entrer votre date de naissance");
+
 
 let checkValidityValue = function (element) {
   if (element.value === "") {
-      addErrorMessage (element);
-      element.parentElement.classList.add('notValid');  
+    element.parentElement.setAttribute("data-error-visible", "true");
   } else {
-    element.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "false");
   };
 };
-//console.log("birthdate " + birthdate.parentElement.classList);
   
 
-document.querySelector("form").addEventListener("submit", function (e) {
-  if (birthdate.parentElement.classList.contains("notValid")) {
-      e.preventDefault();
-      checkValidityValue(birthdate);
-  };
-  console.log("birthdate " + birthdate.parentElement.classList);
+birthdate.addEventListener("change", function (e) {
+  checkValidityValue(birthdate);
+  console.log("message " + e.target.parentElement.getAttribute("data-error-visible"));
 });
 
 
@@ -159,15 +152,23 @@ document.querySelector("form").addEventListener("submit", function (e) {
 // Validation de quantity
 
 const quantity = document.getElementById("quantity");
-quantity.errorText = "Veuillez entrer un nombre entre 0 et 99";
+quantity.parentElement.setAttribute("data-error", "Veuillez entrer un nombre entre " + quantity.min + " et " + quantity.max);
 
-
-document.querySelector("form").addEventListener("submit", function (e) {
-  if (quantity.parentElement.classList.contains("notValid")) {
-    e.preventDefault();
-    checkValidityValue(quantity);
+let checkValidityRange = function (element) {
+  if (element.value < element.min || element.value > 99) // 99 correspond à element.max mais la condition ne fonctionne pas en utilisant element.max (??!)
+  {
+    element.parentElement.setAttribute("data-error-visible", "true");
+  } else {
+    element.parentElement.setAttribute("data-error-visible", "false");
   };
-    console.log(quantity.parentElement.classList);
+};
+
+console.log(quantity.value);
+
+quantity.addEventListener("change", function (e) {
+  checkValidityRange(quantity);
+  console.log(quantity.value);
+  console.log("message " + e.target.parentElement.getAttribute("data-error-visible"));
 });
 
 
@@ -176,57 +177,59 @@ document.querySelector("form").addEventListener("submit", function (e) {
 
 const locationsAll = document.querySelectorAll("input[name='location']");
 const locations = locationsAll[0];
-locations.errorText = "Veuillez choisir une option parmi les villes proposées"
+locations.parentElement.setAttribute("data-error","Veuillez choisir une option parmi les villes proposées");
 
-let checkValidityRadio = function (){
-  let compteur = 0;
-  for (let city of locationsAll) {
-    if (city.checked) {
-      compteur++;
-    };
-  };
- // console.log("compteur1 "+ compteur);
-  if (compteur == 0) {
-   // console.log("compteur2 "+ compteur);
-    addErrorMessage (locations);
-    locations.parentElement.classList.add('notValid');
+let checkValidityRadio = function (element){
+  if (element.checked === false) {
+    element.parentElement.setAttribute("data-error-visible", "true");
   } else {
-    locations.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "false");
   };
 };
 
-
-document.querySelector("form").addEventListener("submit", function (e) {
-  if (locations.parentElement.classList.contains("notValid")) {
-    e.preventDefault();
-    checkValidityRadio();
-  };
-    console.log("locations " + locations.parentElement.classList);
-});
+for (let city of locationsAll) {
+  city.addEventListener("change", function (e) {
+    checkValidityRadio(city);
+    console.log("message " + e.target.parentElement.getAttribute("data-error-visible"));
+  }
+)};
 
 
 
 // Checkbox1
 
 const checkbox1 = document.getElementById("checkbox1");
-checkbox1.errorText = "Vous devez vérifier que vous acceptez les termes et conditions";
+checkbox1.parentElement.setAttribute("data-error", "Vous devez vérifier que vous acceptez les termes et conditions");
+checkbox1.parentElement.setAttribute("data-error-visible", "false");
 
-let checkValidityCheckbox = function () {
-  if (checkbox1.checked === false) {
-    addErrorMessage (checkbox1);
-    checkbox1.parentElement.classList.add('notValid');
+
+let validity = true;
+
+let checkValidityCheckbox = function (element) {
+  if (element.checked === false) {
+    element.parentElement.setAttribute("data-error-visible", "true");
+    validity = false;
   } else {
-    checkbox1.parentElement.classList.remove('notValid');
+    element.parentElement.setAttribute("data-error-visible", "false");
+    validity = true;
   };
 };
 
 
+
+checkbox1.addEventListener("change", function(e) {
+  checkValidityCheckbox(checkbox1);
+ //console.log("checkbox1Message " + checkbox1.parentElement.getAttribute("data-error-visible"));
+  console.log ("validity" + validity);
+});
+
+
 document.querySelector("form").addEventListener("submit", function(e) {
-  if (checkbox1.parentElement.classList.contains("notValid")) {
-    e.preventDefault();
-    checkValidityCheckbox();
+  checkValidityCheckbox(checkbox1);
+  if (validity === false) {
+    e.preventDefault(); 
   };
-  console.log(checkbox1.parentElement.classList);
+  console.log(checkbox1.parentElement.getAttribute("data-error-visible"));
 });
 
 

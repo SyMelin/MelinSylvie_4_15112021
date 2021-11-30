@@ -46,11 +46,11 @@ firstName.parentElement.setAttribute("data-error", "Veuillez entrer " + firstNam
 //firstName.minLength = 2; //déjà pécisé dans le HTML, en propriété de l'input
 
 let isRegNameValid = function (value) {
-  return /^[a-z ,.'-]+$/i.test(value);
+  return /[^0-9\.\,\"\?\!\;\:\#\$\%\&\(\)\*\+\-\/\<\>\=\@\[\]\\\^\_\{\}\|\~]+/.test(value);
 };
 
 let checkValidityText = function (element) {
-  if (element.value.length > element.minLength && (isRegNameValid(element.value) === true)) {
+  if (element.value.length >= element.minLength && (isRegNameValid(element.value) === true)) {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
   } else {
@@ -65,7 +65,7 @@ let checkValidityText = function (element) {
 let validityFirstName = 0;
 
 firstName.addEventListener("change", function(e) {
-  console.log(isValid(firstName.value));
+  console.log(isRegNameValid(firstName.value));
   validityFirstName = checkValidityText(firstName);
   console.log("validityFirstName " + validityFirstName);
   console.log("message "+ e.target.parentElement.getAttribute("data-error-visible"));
@@ -126,10 +126,13 @@ email.addEventListener("change", function(e) {
 const birthdate = document.getElementById("birthdate");
 birthdate.parentElement.setAttribute("data-error", "Veuillez entrer votre date de naissance");
 
+
+//Regex format Dat=> Ne fonctionne pas
+/*
 let isRegDateValid = function (value) {
   return /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/.test(value);
 };
-
+*/
 
 let checkValidityValue = function (element) {
   if (!(element.value === "" )) {
@@ -253,7 +256,7 @@ return formDataValidity =
 };
 
     document.querySelector("form").addEventListener("submit", function(e) {
-      e.preventDefault();
+     // e.preventDefault();
       console.log (validityFirstName);
       console.log (validityLastName);
       console.log (validityEmail);
@@ -266,7 +269,8 @@ return formDataValidity =
       if (validate() === formDataAll.length){
         console.log("BRAVO!");
       } else {
-        console.log("NOPE!");
+        console.log("Au moins un champ n'est pas valide !");
+        e.preventDefault();
           for (let formData of formDataAll) {
             if (formData.getAttribute("data-error-visible") === null) {
               formData.setAttribute("data-error-visible", "true");

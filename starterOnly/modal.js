@@ -34,6 +34,9 @@ close.addEventListener("click", function() {
    document.querySelector(".bground").style.display = "none";
 })
 
+
+
+
 let formDataValidity = 0;
  
 // Validation sur firstName
@@ -42,20 +45,27 @@ const firstName = document.getElementById("first");
 firstName.parentElement.setAttribute("data-error", "Veuillez entrer " + firstName.minLength + " caractères ou plus pour le champ du prénom");
 //firstName.minLength = 2; //déjà pécisé dans le HTML, en propriété de l'input
 
+let isRegNameValid = function (value) {
+  return /^[a-z ,.'-]+$/i.test(value);
+};
 
 let checkValidityText = function (element) {
-  if (element.value.length < element.minLength) {
-    element.parentElement.setAttribute("data-error-visible", "true");
-    return 0;
-  } else {
+  if (element.value.length > element.minLength && (isRegNameValid(element.value) === true)) {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
+  } else {
+    element.parentElement.setAttribute("data-error-visible", "true");
+    return 0;
   };
 };
+
+
+
 
 let validityFirstName = 0;
 
 firstName.addEventListener("change", function(e) {
+  console.log(isValid(firstName.value));
   validityFirstName = checkValidityText(firstName);
   console.log("validityFirstName " + validityFirstName);
   console.log("message "+ e.target.parentElement.getAttribute("data-error-visible"));
@@ -85,13 +95,19 @@ email.parentElement.setAttribute("data-error", "Veuillez entrer une adresse e-ma
 //email.parentElement.setAttribute("data-error-visible", "false");
 //console.log(email.parentElement.attributes);
 
+
+let isRegEmailValid = function (value) {
+  return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g.test(value);
+};
+
+
 let checkValidityEmail = function(element) {
-  if (element.validity.typeMismatch || element.value == "") {
-    element.parentElement.setAttribute("data-error-visible", "true");
-    return 0;
-  } else {
+  if (!(element.validity.typeMismatch) && (isRegEmailValid(element.value) === true)) {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
+  } else {
+    element.parentElement.setAttribute("data-error-visible", "true");
+    return 0;
   };
 };
 
@@ -110,14 +126,18 @@ email.addEventListener("change", function(e) {
 const birthdate = document.getElementById("birthdate");
 birthdate.parentElement.setAttribute("data-error", "Veuillez entrer votre date de naissance");
 
+let isRegDateValid = function (value) {
+  return /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/.test(value);
+};
+
 
 let checkValidityValue = function (element) {
-  if (element.value === "") {
-    element.parentElement.setAttribute("data-error-visible", "true");
-    return 0;
-  } else {
+  if (!(element.value === "" )) {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
+  } else {
+    element.parentElement.setAttribute("data-error-visible", "true");
+    return 0;
   };
 };
   
@@ -218,15 +238,6 @@ checkbox1.addEventListener("change", function(e) {
   console.log("message " + e.target.parentElement.getAttribute("data-error-visible"));
 });
 
-/*
-document.querySelector("form").addEventListener("submit", function(e) {
-  checkValidityCheckbox(checkbox1);
-  if (validity === false) {
-    e.preventDefault(); 
-  };
-  console.log(checkbox1.parentElement.getAttribute("data-error-visible"));
-});
-*/
 
 //Validation du formulaire
 

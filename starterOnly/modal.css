@@ -166,7 +166,7 @@ main {
   height: 100%;
   width: 100%;
   overflow: auto;
-  background-color: rgba(26, 39, 156, 0.4); /* A changer en blanc?? */
+  background-color: rgba(26, 39, 156, 0.4);
 }
 
 .content {
@@ -244,7 +244,7 @@ input[data-error]::after {
   display: block;
   width: 20px;
   height: 20px;
-  border: 2px solid #279e7a;
+  border: 2px solid #c4c4c4; /* modifié */
   border-radius: 50%;
   text-indent: 29px;
   white-space: nowrap;
@@ -276,6 +276,9 @@ input[data-error]::after {
 .checkbox-input:checked + .checkbox2-label .checkbox-icon::after {
   opacity: 1;
 }
+.checkbox-input:checked + .checkbox-label .checkbox-icon {
+  border: 2px solid #279e7a;
+}/* Ajouté*/
 .checkbox-input:checked + .checkbox2-label .checkbox-icon {
   background: #279e7a;
 }
@@ -333,6 +336,21 @@ input[data-error]::after {
   cursor: pointer;
   border: 0;
 }
+
+.confirm {
+  z-index: 5;
+  margin: auto;
+  width: 80%;
+  text-align: center;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 51.34px;
+  position: absolute;
+  top: 37%;
+}
+
+
+
 
 /* custom select styles */
 .custom-select {

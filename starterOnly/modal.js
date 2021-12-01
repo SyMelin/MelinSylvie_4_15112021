@@ -24,23 +24,13 @@ function launchModal() {
 /////////////////////// CODE AJOUTE //////////////////////////////////////////
 
 
-//let close = document.querySelectorAll(".content .close");
-
-// close modal event
-//close.forEach((btn) => btn.addEventListener("click", closeModal));
-
 // close modal form
-//function closeModal() {
- // modalBg.style.display = "none";
-//}
-
-
-// close modal form => première version
+function closeModal() {
+  modalBg.style.display = "none";
+}
 
 const closeSpan = document.querySelector(".content .close");
-closeSpan.addEventListener("click", function() {
-  modalBg.style.display = "none";
-});
+closeSpan.addEventListener("click", closeModal);
 
 
 
@@ -49,7 +39,7 @@ closeSpan.addEventListener("click", function() {
 
 
 
-let formDataValidity = 0;
+let formDataValidity = 0; //variable qui compte le nombre de champs valides
 
  
 
@@ -282,54 +272,42 @@ return formDataValidity =
 };
 
 const formDataAll = document.getElementsByClassName("formData"); //Attention, il y a une variable formData déclarée en début de script, qui ne sert pas
-function confirm() {
+function displayConfirm() {
   for (let formData of formDataAll) {
     formData.style.opacity = "0";
   };
   document.querySelector(".text-label").style.opacity = "0";
+  let confirmationMessage = document.createElement("p")
+  confirmationMessage.innerHTML = "Merci !<br />Votre réservation<br />a été reçue.";
+  confirmationMessage.classList.add("confirm");
+  let modalBody = document.querySelector(".modal-body");
+  modalBody.prepend(confirmationMessage);
   document.querySelector("input.btn-submit").setAttribute("type", "button");
   document.querySelector("input.btn-submit").setAttribute("value", "Fermer");
   document.querySelector("input.btn-submit").classList.add("closeBouton");
   console.log(document.querySelector("input.btn-submit").getAttribute("class"));
+  const closeBtn = document.querySelector(".closeBouton");
+  console.log(closeBtn);
+  closeBtn.addEventListener("click", closeModal);
 };
 
 
 document.querySelector("form").addEventListener("submit", function(e) {
   e.preventDefault();
-  console.log (validityFirstName);
-  console.log (validityLastName);
-  console.log (validityEmail);
-  console.log (validityBirthdate);
-  console.log (validityQuantity);
-  console.log (validityRadio);
-  console.log (validityCheckbox1);
+  console.log ("validityFirstName = " + validityFirstName);
+  console.log ("validityLastName = " + validityLastName);
+  console.log ("validityEmail = " + validityEmail);
+  console.log ("validityBirthdate = " + validityBirthdate);
+  console.log ("validityQuantity = " + validityQuantity);
+  console.log ("validityRadio = " + validityRadio);
+  console.log ("validityCheckbox1 = " + validityCheckbox1);
   validate();
   let formDataAll = document.getElementsByClassName("formData");
   if (validate() === formDataAll.length){
     console.log("BRAVO!");
-    e.preventDefault();
-    fetch("https://mockbin.com/request", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json', 
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({first: document.getElementById("first").value})
-    })
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    .then(function(value) {
-      confirm();
-        document
-          .querySelector("form")
-          .innerText = first.postData.text;
-    });
+    displayConfirm();
   } else {
     console.log("Au moins un champ n'est pas valide !");
-    e.preventDefault();
       for (let formData of formDataAll) {
         if (formData.getAttribute("data-error-visible") === null) {
           formData.setAttribute("data-error-visible", "true");
@@ -337,27 +315,3 @@ document.querySelector("form").addEventListener("submit", function(e) {
       };
     };
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-const closeBtn = document.querySelector(".closeBouton");
-closeBtn.addEventListener("click", function() {
-  modalBg.style.display = "none";
-});
-*/

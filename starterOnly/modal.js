@@ -8,7 +8,7 @@ function editNav() {
 }
 
 // DOM Elements
-const modalbg = document.querySelector(".bground");
+const modalBg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 
@@ -17,28 +17,42 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
 // launch modal form
 function launchModal() {
-  modalbg.style.display = "block";
+  modalBg.style.display = "block";
 }
-
-
-
-
 
 
 /////////////////////// CODE AJOUTE //////////////////////////////////////////
 
 
-// close modal form
-const close = document.querySelector(".content .close");
-close.addEventListener("click", function() {
-   document.querySelector(".bground").style.display = "none";
-})
+//let close = document.querySelectorAll(".content .close");
 
+// close modal event
+//close.forEach((btn) => btn.addEventListener("click", closeModal));
+
+// close modal form
+//function closeModal() {
+ // modalBg.style.display = "none";
+//}
+
+
+// close modal form => première version
+
+const closeSpan = document.querySelector(".content .close");
+closeSpan.addEventListener("click", function() {
+  modalBg.style.display = "none";
+});
+
+
+
+
+///////// VALIDATION DU FORMULAIRE //////////
 
 
 
 let formDataValidity = 0;
+
  
+
 // Validation sur firstName
 
 const firstName = document.getElementById("first");
@@ -46,8 +60,13 @@ firstName.parentElement.setAttribute("data-error", "Veuillez entrer " + firstNam
 //firstName.minLength = 2; //déjà pécisé dans le HTML, en propriété de l'input
 
 let isRegNameValid = function (value) {
-  return /[^0-9\.\,\"\?\!\;\:\#\$\%\&\(\)\*\+\-\/\<\>\=\@\[\]\\\^\_\{\}\|\~]+/.test(value);
+  return /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm.test(value); //la première lettre doit être une majuscule
 };
+/*
+let isLengthTextValid = function (length, minLength) {
+  return length >= minLength;
+};
+*/
 
 let checkValidityText = function (element) {
   if (element.value.length >= element.minLength && (isRegNameValid(element.value) === true)) {
@@ -61,7 +80,6 @@ let checkValidityText = function (element) {
 
 
 
-
 let validityFirstName = 0;
 
 firstName.addEventListener("change", function(e) {
@@ -70,6 +88,8 @@ firstName.addEventListener("change", function(e) {
   console.log("validityFirstName " + validityFirstName);
   console.log("message "+ e.target.parentElement.getAttribute("data-error-visible"));
 });
+
+
 
 
 //Validation sur lastName
@@ -88,6 +108,8 @@ lastName.addEventListener("change", function(e) {
 
 
 
+
+
 //Validation de email
 
 const email = document.getElementById("email");
@@ -97,7 +119,7 @@ email.parentElement.setAttribute("data-error", "Veuillez entrer une adresse e-ma
 
 
 let isRegEmailValid = function (value) {
-  return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g.test(value);
+  return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value); //regex W3C
 };
 
 
@@ -121,21 +143,21 @@ email.addEventListener("change", function(e) {
 
 
 
+
 // Validation de birthdate
 
 const birthdate = document.getElementById("birthdate");
 birthdate.parentElement.setAttribute("data-error", "Veuillez entrer votre date de naissance");
 
 
-//Regex format Dat=> Ne fonctionne pas
-/*
 let isRegDateValid = function (value) {
-  return /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/.test(value);
+  return /(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])/.test(value); // la valeur saisie est DD/MM/AAAA mais la valeur obtenue est AAAA/MM/DD. D'où l'inversion dans la Regex
 };
-*/
+
 
 let checkValidityValue = function (element) {
-  if (!(element.value === "" )) {
+  console.log(element.value);
+  if (isRegDateValid(element.value) === true) {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
   } else {
@@ -154,19 +176,20 @@ birthdate.addEventListener("change", function (e) {
 
 
 
+
 // Validation de quantity
 
 const quantity = document.getElementById("quantity");
 quantity.parentElement.setAttribute("data-error", "Veuillez entrer un nombre entre " + quantity.min + " et " + quantity.max);
 
 let checkValidityRange = function (element) {
-  if (element.value < element.min || element.value > 99) // 99 correspond à element.max mais la condition ne fonctionne pas en utilisant element.max (??!)
+  if (element.value >= element.min && element.value <= element.max)
   {
-    element.parentElement.setAttribute("data-error-visible", "true");
-    return 0;
-  } else {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
+  } else {
+    element.parentElement.setAttribute("data-error-visible", "true");
+    return 0;
   };
 };
 
@@ -177,6 +200,7 @@ quantity.addEventListener("change", function (e) {
   console.log("validityQuantity " + validityQuantity);
   console.log("message " + e.target.parentElement.getAttribute("data-error-visible"));
 });
+
 
 
 
@@ -224,12 +248,12 @@ checkbox1.parentElement.setAttribute("data-error-visible", "false");
 
 
 let checkValidityCheckbox = function (element) {
-  if (element.checked === false) {
-    element.parentElement.setAttribute("data-error-visible", "true");
-    return 0;
-  } else {
+  if (element.checked === true) {
     element.parentElement.setAttribute("data-error-visible", "false");
     return 1;
+  } else {
+    element.parentElement.setAttribute("data-error-visible", "true");
+    return 0;
   };
 };
 
@@ -242,7 +266,9 @@ checkbox1.addEventListener("change", function(e) {
 });
 
 
-//Validation du formulaire
+
+
+//Validation globale du formulaire
 
 let validate = function () {
 return formDataValidity = 
@@ -255,26 +281,83 @@ return formDataValidity =
     validityCheckbox1;
 };
 
-    document.querySelector("form").addEventListener("submit", function(e) {
-     // e.preventDefault();
-      console.log (validityFirstName);
-      console.log (validityLastName);
-      console.log (validityEmail);
-      console.log (validityBirthdate);
-      console.log (validityQuantity);
-      console.log (validityRadio);
-      console.log (validityCheckbox1);
-      validate();
-      let formDataAll = document.getElementsByClassName("formData")
-      if (validate() === formDataAll.length){
-        console.log("BRAVO!");
-      } else {
-        console.log("Au moins un champ n'est pas valide !");
-        e.preventDefault();
-          for (let formData of formDataAll) {
-            if (formData.getAttribute("data-error-visible") === null) {
-              formData.setAttribute("data-error-visible", "true");
-            };
-          };
-        };
+const formDataAll = document.getElementsByClassName("formData"); //Attention, il y a une variable formData déclarée en début de script, qui ne sert pas
+function confirm() {
+  for (let formData of formDataAll) {
+    formData.style.opacity = "0";
+  };
+  document.querySelector(".text-label").style.opacity = "0";
+  document.querySelector("input.btn-submit").setAttribute("type", "button");
+  document.querySelector("input.btn-submit").setAttribute("value", "Fermer");
+  document.querySelector("input.btn-submit").classList.add("closeBouton");
+  console.log(document.querySelector("input.btn-submit").getAttribute("class"));
+};
+
+
+document.querySelector("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  console.log (validityFirstName);
+  console.log (validityLastName);
+  console.log (validityEmail);
+  console.log (validityBirthdate);
+  console.log (validityQuantity);
+  console.log (validityRadio);
+  console.log (validityCheckbox1);
+  validate();
+  let formDataAll = document.getElementsByClassName("formData");
+  if (validate() === formDataAll.length){
+    console.log("BRAVO!");
+    e.preventDefault();
+    fetch("https://mockbin.com/request", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json', 
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({first: document.getElementById("first").value})
+    })
+    .then(function(res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function(value) {
+      confirm();
+        document
+          .querySelector("form")
+          .innerText = first.postData.text;
     });
+  } else {
+    console.log("Au moins un champ n'est pas valide !");
+    e.preventDefault();
+      for (let formData of formDataAll) {
+        if (formData.getAttribute("data-error-visible") === null) {
+          formData.setAttribute("data-error-visible", "true");
+        };
+      };
+    };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+const closeBtn = document.querySelector(".closeBouton");
+closeBtn.addEventListener("click", function() {
+  modalBg.style.display = "none";
+});
+*/

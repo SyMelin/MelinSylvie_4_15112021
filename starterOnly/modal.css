@@ -166,7 +166,7 @@ main {
   height: 100%;
   width: 100%;
   overflow: auto;
-  background-color: rgba(26, 39, 156, 0.4);
+  background-color: rgba(26, 39, 156, 0.4); /* A changer en blanc?? */
 }
 
 .content {
@@ -333,6 +333,7 @@ input[data-error]::after {
   cursor: pointer;
   border: 0;
 }
+
 /* custom select styles */
 .custom-select {
   position: relative;

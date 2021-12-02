@@ -244,7 +244,7 @@ input[data-error]::after {
   display: block;
   width: 20px;
   height: 20px;
-  border: 2px solid #c4c4c4; /* modifié */
+  border: 2px solid #c4c4c4; /* modifié pour que les boutons radio soient de cette couleur avant sélection  */
   border-radius: 50%;
   text-indent: 29px;
   white-space: nowrap;
@@ -276,9 +276,15 @@ input[data-error]::after {
 .checkbox-input:checked + .checkbox2-label .checkbox-icon::after {
   opacity: 1;
 }
+
+
+/* /// Code Ajouté pour modifier la couleur des boutons radio à la sélection /// */
 .checkbox-input:checked + .checkbox-label .checkbox-icon {
   border: 2px solid #279e7a;
-}/* Ajouté*/
+}
+/* ////////////////// */
+
+
 .checkbox-input:checked + .checkbox2-label .checkbox-icon {
   background: #279e7a;
 }

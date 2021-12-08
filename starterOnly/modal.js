@@ -67,7 +67,7 @@ firstName.parentElement.setAttribute("data-error", "Veuillez entrer au minimum "
 // Expression régulière qui contient une conditon de validation du champ :
 //la chaîne de caractère peut contenir des accents/un tiret/un espace/un point
 let isRegNameValid = function (value) {
-  return /\b([A-zÀ-ÿ][-,a-z. ']+[ ]*)+/gm.test(value); 
+  return /^\b([A-zÀ-ÿ][-,a-zà-ÿ. ']+[ ]*)+$/gm.test(value); 
 };
 
 // fonction de vérification de la validité du champ :
